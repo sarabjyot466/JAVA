@@ -1,0 +1,199 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.*;
+
+public class LibraryManagementSystemGUI extends JFrame implements ActionListener {
+
+    // Labels
+    JLabel lblId, lblTitle, lblAuthor, lblQuantity;
+
+    // Text Fields
+    JTextField txtId, txtTitle, txtAuthor, txtQuantity;
+
+    // Buttons
+    JButton btnAdd, btnUpdate, btnDelete, btnClear;
+
+    // Table
+    JTable table;
+    DefaultTableModel model;
+
+    // Constructor
+    LibraryManagementSystemGUI() {
+
+        setTitle("Library Management System");
+        setSize(700, 500);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Labels
+        lblId = new JLabel("Book ID:");
+        lblId.setBounds(50, 30, 100, 30);
+        add(lblId);
+
+        lblTitle = new JLabel("Title:");
+        lblTitle.setBounds(50, 70, 100, 30);
+        add(lblTitle);
+
+        lblAuthor = new JLabel("Author:");
+        lblAuthor.setBounds(50, 110, 100, 30);
+        add(lblAuthor);
+
+        lblQuantity = new JLabel("Quantity:");
+        lblQuantity.setBounds(50, 150, 100, 30);
+        add(lblQuantity);
+
+        // Text Fields
+        txtId = new JTextField();
+        txtId.setBounds(150, 30, 200, 30);
+        add(txtId);
+
+        txtTitle = new JTextField();
+        txtTitle.setBounds(150, 70, 200, 30);
+        add(txtTitle);
+
+        txtAuthor = new JTextField();
+        txtAuthor.setBounds(150, 110, 200, 30);
+        add(txtAuthor);
+
+        txtQuantity = new JTextField();
+        txtQuantity.setBounds(150, 150, 200, 30);
+        add(txtQuantity);
+
+        // Buttons
+        btnAdd = new JButton("Add");
+        btnAdd.setBounds(400, 30, 100, 30);
+        add(btnAdd);
+
+        btnUpdate = new JButton("Update");
+        btnUpdate.setBounds(400, 70, 100, 30);
+        add(btnUpdate);
+
+        btnDelete = new JButton("Delete");
+        btnDelete.setBounds(400, 110, 100, 30);
+        add(btnDelete);
+
+        btnClear = new JButton("Clear");
+        btnClear.setBounds(400, 150, 100, 30);
+        add(btnClear);
+
+        // Button Actions
+        btnAdd.addActionListener(this);
+        btnUpdate.addActionListener(this);
+        btnDelete.addActionListener(this);
+        btnClear.addActionListener(this);
+
+        // Table
+        model = new DefaultTableModel();
+        model.addColumn("Book ID");
+        model.addColumn("Title");
+        model.addColumn("Author");
+        model.addColumn("Quantity");
+
+        table = new JTable(model);
+
+        JScrollPane pane = new JScrollPane(table);
+        pane.setBounds(50, 220, 580, 200);
+        add(pane);
+
+        // Table Row Selection
+        table.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+
+                int row = table.getSelectedRow();
+
+                txtId.setText(model.getValueAt(row, 0).toString());
+                txtTitle.setText(model.getValueAt(row, 1).toString());
+                txtAuthor.setText(model.getValueAt(row, 2).toString());
+                txtQuantity.setText(model.getValueAt(row, 3).toString());
+            }
+        });
+
+        setVisible(true);
+    }
+
+    // Action Events
+    public void actionPerformed(ActionEvent e) {
+
+        // Validation
+        if (txtId.getText().isEmpty() ||
+            txtTitle.getText().isEmpty() ||
+            txtAuthor.getText().isEmpty() ||
+            txtQuantity.getText().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "Please Fill All Fields");
+            return;
+        }
+
+        String id = txtId.getText();
+        String title = txtTitle.getText();
+        String author = txtAuthor.getText();
+        String quantity = txtQuantity.getText();
+
+        // Add
+        if (e.getSource() == btnAdd) {
+
+            model.addRow(new Object[]{id, title, author, quantity});
+
+            JOptionPane.showMessageDialog(this, "Book Added Successfully");
+            clearFields();
+        }
+
+        // Update
+        if (e.getSource() == btnUpdate) {
+
+            int row = table.getSelectedRow();
+
+            if (row >= 0) {
+
+                model.setValueAt(id, row, 0);
+                model.setValueAt(title, row, 1);
+                model.setValueAt(author, row, 2);
+                model.setValueAt(quantity, row, 3);
+
+                JOptionPane.showMessageDialog(this, "Book Updated Successfully");
+                clearFields();
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Select a Row to Update");
+            }
+        }
+
+        // Delete
+        if (e.getSource() == btnDelete) {
+
+            int row = table.getSelectedRow();
+
+            if (row >= 0) {
+
+                model.removeRow(row);
+
+                JOptionPane.showMessageDialog(this, "Book Deleted Successfully");
+                clearFields();
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Select a Row to Delete");
+            }
+        }
+
+        // Clear
+        if (e.getSource() == btnClear) {
+            clearFields();
+        }
+    }
+
+    // Clear Fields Method
+    void clearFields() {
+
+        txtId.setText("");
+        txtTitle.setText("");
+        txtAuthor.setText("");
+        txtQuantity.setText("");
+    }
+
+    // Main Method
+    public static void main(String[] args) {
+
+        new LibraryManagementSystemGUI();
+    }
+}
